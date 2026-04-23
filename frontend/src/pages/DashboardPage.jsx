@@ -96,7 +96,7 @@ function DashboardPage() {
           {!isLoading && !error && surveys.length === 0 ? (
             <div className="dashboard-empty">
               <strong>Пока нет ни одного опроса.</strong>
-              <span>На следующем этапе здесь появится ахахахах и карточки ваших форм.</span>
+              <span>На следующем этапе здесь появится конструктор и карточки ваших форм.</span>
             </div>
           ) : null}
 
