@@ -26,3 +26,7 @@ test-results/
 
 # Docker
 postgres_data/
+
+# Temporary deployment artifacts
+.keys/
+deploy_bundle.tar.gz
