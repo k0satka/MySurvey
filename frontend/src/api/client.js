@@ -29,7 +29,15 @@ export async function request(path, options = {}) {
   });
 
   const raw = await response.text();
-  const payload = raw ? JSON.parse(raw) : null;
+  let payload = null;
+
+  if (raw) {
+    try {
+      payload = JSON.parse(raw);
+    } catch {
+      payload = null;
+    }
+  }
 
   if (!response.ok) {
     throw new ApiError(
