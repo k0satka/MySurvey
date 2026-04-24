@@ -58,11 +58,6 @@ function RegisterPage() {
   return (
     <div className="page register-page">
       <div className="frame register-frame">
-        <div className="auth-brand">
-          <span className="auth-brand-badge">Auth</span>
-          <p className="auth-brand-copy">Начинаем с учётных записей и пустого личного кабинета для будущих опросов.</p>
-        </div>
-
         <div className="register-title-group">
           <div className="register-title-label">Регистрация</div>
           <div className="register-title-line" />

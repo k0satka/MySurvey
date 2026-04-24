@@ -1,16 +1,20 @@
+/* --- Страница --- */
 .register-page {
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* --- Фрейм --- */
 .register-frame {
-  width: min(560px, 100%);
+  width: 38%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 32px;
 }
 
+/* --- Заголовок --- */
 .register-title-group {
   display: flex;
   flex-direction: column;
@@ -19,55 +23,76 @@
 }
 
 .register-title-label {
+  font-family: "Poppins", sans-serif;
   font-size: 28px;
   font-weight: 600;
-  color: var(--color-text);
+  color: #222222;
 }
 
 .register-title-line {
   width: 100%;
-  border-bottom: 2px solid rgba(35, 41, 70, 0.18);
+  height: 0;
+  border-bottom: 2px solid #777777;
+  margin-top: 0;
 }
 
+/* --- Поле ввода --- */
 .register-input-group {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   gap: 8px;
   width: 100%;
 }
 
 .register-input-label {
+  font-family: "Poppins", sans-serif;
   font-size: 16px;
-  color: var(--color-text);
+  font-weight: 400;
+  color: #222222;
 }
 
 .register-input-wrapper {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: 10px;
+  justify-content: flex-start;
+  gap: 8px;
   width: 100%;
 }
 
 .register-input-field {
   border: none;
-  font-family: inherit;
-  font-size: 15px;
-  color: var(--color-text);
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #222222;
   background: transparent;
   outline: none;
   width: 100%;
 }
 
+.register-input-field::placeholder {
+  color: #777777;
+}
+
 .register-input-line {
   width: 100%;
-  border-bottom: 1.5px solid rgba(35, 41, 70, 0.22);
+  height: 0;
+  border-bottom: 1.5px solid #777777;
 }
 
 .register-password-wrapper {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   width: 100%;
+}
+
+input::-ms-clear,
+input::-ms-reveal {
+  display: none;
 }
 
 .register-password-toggle {
@@ -81,31 +106,33 @@
   flex-shrink: 0;
 }
 
+/* --- Кнопки --- */
 .register-button-group {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  gap: 16px;
+  width: 80%;
 }
 
 .register-button-primary {
-  flex: 1 1 auto;
-  min-height: 50px;
+  width: 60%;
+  height: 50px;
 }
 
 .register-button-secondary {
-  width: 140px;
-  min-height: 50px;
+  width: 30%;
+  height: 50px;
 }
 
+/* --- Адаптация под телефоны --- */
 @media (max-width: 768px) {
   .register-page {
     min-height: 100dvh;
   }
 
   .register-frame {
-    width: min(100%, 560px);
+    width: 90%;
     padding: 24px;
     gap: 20px;
   }
@@ -114,12 +141,38 @@
     font-size: 24px;
   }
 
-  .register-button-group {
-    flex-direction: column;
+  .register-input-group {
+    width: 100%;
   }
 
-  .register-button-primary,
+  .register-input-label {
+    font-size: 16px;
+  }
+
+  .register-input-field {
+    font-size: 16px;
+  }
+
+  .register-button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 16px;
+  }
+
+  .register-button-primary {
+    width: 100%;
+    height: auto;
+    padding: 12px;
+    font-size: 16px;
+  }
+
   .register-button-secondary {
     width: 100%;
+    height: auto;
+    padding: 12px;
+    font-size: 16px;
   }
 }

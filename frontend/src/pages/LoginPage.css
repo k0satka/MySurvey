@@ -1,16 +1,20 @@
+/* --- Страница --- */
 .login-page {
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* --- Фрейм --- */
 .login-frame {
-  width: min(540px, 100%);
+  width: 38%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 32px;
 }
 
+/* --- Заголовок --- */
 .login-title-group {
   display: flex;
   flex-direction: column;
@@ -19,55 +23,76 @@
 }
 
 .login-title-label {
+  font-family: "Poppins", sans-serif;
   font-size: 28px;
   font-weight: 600;
-  color: var(--color-text);
+  color: #222222;
 }
 
 .login-title-line {
   width: 100%;
-  border-bottom: 2px solid rgba(35, 41, 70, 0.18);
+  height: 0;
+  border-bottom: 2px solid #777777;
+  margin-top: 0;
 }
 
+/* --- Поле ввода --- */
 .login-input-group {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   gap: 8px;
   width: 100%;
 }
 
 .login-input-label {
+  font-family: "Poppins", sans-serif;
   font-size: 16px;
-  color: var(--color-text);
+  font-weight: 400;
+  color: #222222;
 }
 
 .login-input-wrapper {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: 10px;
+  justify-content: flex-start;
+  gap: 8px;
   width: 100%;
 }
 
 .login-input-field {
   border: none;
-  font-family: inherit;
-  font-size: 15px;
-  color: var(--color-text);
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #222222;
   background: transparent;
   outline: none;
   width: 100%;
 }
 
+.login-input-field::placeholder {
+  color: #777777;
+}
+
 .login-input-line {
   width: 100%;
-  border-bottom: 1.5px solid rgba(35, 41, 70, 0.22);
+  height: 0;
+  border-bottom: 1.5px solid #777777;
 }
 
 .login-password-wrapper {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   width: 100%;
+}
+
+input::-ms-clear,
+input::-ms-reveal {
+  display: none;
 }
 
 .login-password-toggle {
@@ -81,28 +106,32 @@
   flex-shrink: 0;
 }
 
+/* --- Кнопки --- */
 .login-button-primary {
-  width: 68%;
-  min-height: 50px;
+  width: 65%;
+  height: 50px;
 }
 
+/* --- Текст о регистрации --- */
 .login-register-group {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
+  width: auto;
 }
 
 .login-register-text {
+  font-family: "Poppins", sans-serif;
   font-size: 16px;
-  color: var(--color-muted);
+  font-weight: 400;
+  color: #222222;
 }
 
 .login-register-link {
-  font-family: inherit;
+  font-family: "Poppins", sans-serif;
   font-size: 16px;
-  font-weight: 600;
-  color: var(--color-primary);
+  font-weight: 500;
+  color: #0c21c1;
   text-decoration: none;
   background: none;
   border: none;
@@ -113,13 +142,14 @@
   text-decoration: underline;
 }
 
+/* --- Адаптация под телефоны --- */
 @media (max-width: 768px) {
   .login-page {
     min-height: 100dvh;
   }
 
   .login-frame {
-    width: min(100%, 540px);
+    width: 90%;
     padding: 24px;
     gap: 20px;
   }
@@ -128,11 +158,29 @@
     font-size: 24px;
   }
 
-  .login-button-primary {
+  .login-input-group {
     width: 100%;
   }
 
-  .login-register-text,
+  .login-input-label {
+    font-size: 16px;
+  }
+
+  .login-input-field {
+    font-size: 16px;
+  }
+
+  .login-button-primary {
+    width: 100%;
+    height: auto;
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .login-register-text {
+    font-size: 14px;
+  }
+
   .login-register-link {
     font-size: 14px;
   }

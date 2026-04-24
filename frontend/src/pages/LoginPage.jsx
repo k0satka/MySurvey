@@ -50,11 +50,6 @@ function LoginPage() {
   return (
     <div className="page login-page">
       <div className="frame login-frame">
-        <div className="auth-brand">
-          <span className="auth-brand-badge">MVP</span>
-          <p className="auth-brand-copy">Основа сервиса опросов с авторизацией и личным кабинетом.</p>
-        </div>
-
         <div className="login-title-group">
           <div className="login-title-label">Авторизация</div>
           <div className="login-title-line" />

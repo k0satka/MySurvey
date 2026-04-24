@@ -49,72 +49,68 @@ function DashboardPage() {
   }, [navigate, signOut, token]);
 
   return (
-    <div className="dashboard-shell">
-      <header className="dashboard-hero">
-        <div>
-          <span className="dashboard-badge">Dashboard</span>
-          <h1>Здравствуйте, {user.name}</h1>
-          <p>
-            Это ваш стартовый кабинет. Здесь уже работает авторизация, а следующим шагом команда сможет
-            подключить конструктор опросов, публикацию и статистику.
-          </p>
-        </div>
-        <button className="button-secondary dashboard-logout" type="button" onClick={signOut}>
-          Выйти
-        </button>
-      </header>
+    <div className="page dashboard-page">
+      <div className="frame dashboard-frame">
+        <header className="dashboard-header">
+          <div className="dashboard-title-group">
+            <div className="dashboard-title-label">Личный кабинет</div>
+            <div className="dashboard-title-line" />
+          </div>
+          <button className="button-secondary dashboard-logout" type="button" onClick={signOut}>
+            Выйти
+          </button>
+        </header>
 
-      <section className="dashboard-grid">
-        <article className="dashboard-card">
-          <h2>Аккаунт</h2>
-          <dl className="dashboard-metadata">
-            <div>
-              <dt>Имя</dt>
-              <dd>{user.name}</dd>
-            </div>
-            <div>
-              <dt>ID</dt>
-              <dd>{user.userID}</dd>
-            </div>
-            <div>
-              <dt>Роль</dt>
-              <dd>{user.isAdmin ? "Администратор" : "Пользователь"}</dd>
-            </div>
-          </dl>
-        </article>
+        <section className="dashboard-section">
+          <article className="dashboard-card dashboard-account-card">
+            <h2>Аккаунт</h2>
+            <dl className="dashboard-metadata">
+              <div>
+                <dt>Имя</dt>
+                <dd>{user.name}</dd>
+              </div>
+              <div>
+                <dt>ID</dt>
+                <dd>{user.userID}</dd>
+              </div>
+              <div>
+                <dt>Роль</dt>
+                <dd>{user.isAdmin ? "Администратор" : "Пользователь"}</dd>
+              </div>
+            </dl>
+          </article>
 
-        <article className="dashboard-card dashboard-card-wide">
-          <div className="dashboard-card-heading">
+          <article className="dashboard-card dashboard-surveys-card">
             <div>
               <h2>Мои опросы</h2>
-              <p>Пока список пустой, но база данных и защищённый API уже готовы к следующему этапу.</p>
+              <p>Список пока пустой, но кабинет уже подключён к защищённому API и готов к следующим этапам MVP.</p>
             </div>
-          </div>
 
-          {isLoading ? <div className="dashboard-empty">Загружаем данные...</div> : null}
-          {!isLoading && error ? <div className="form-error">{error}</div> : null}
-          {!isLoading && !error && surveys.length === 0 ? (
-            <div className="dashboard-empty">
-              <strong>Пока нет ни одного опроса.</strong>
-              <span>На следующем этапе здесь появится конструктор и карточки ваших форм.</span>
-            </div>
-          ) : null}
+            {isLoading ? <div className="dashboard-empty">Загружаем данные...</div> : null}
+            {!isLoading && error ? <div className="form-error">{error}</div> : null}
+            {!isLoading && !error && surveys.length === 0 ? (
+              <div className="dashboard-empty">
+                <strong>Пока нет ни одного опроса.</strong>
+                <span>На следующем этапе здесь появятся карточки форм, конструктор вопросов и базовая статистика.</span>
+              </div>
+            ) : null}
 
-          {!isLoading && !error && surveys.length > 0 ? (
-            <ul className="dashboard-survey-list">
-              {surveys.map((survey) => (
-                <li key={survey.surveyID} className="dashboard-survey-item">
-                  <div>
-                    <strong>{survey.title}</strong>
-                    <span>Статус: {survey.status}</span>
-                  </div>
-                  <span>{survey.publishedAt ? new Date(survey.publishedAt).toLocaleString("ru-RU") : "Не опубликован"}</span>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </article>
-      </section>
+            {!isLoading && !error && surveys.length > 0 ? (
+              <ul className="dashboard-survey-list">
+                {surveys.map((survey) => (
+                  <li key={survey.surveyID} className="dashboard-survey-item">
+                    <div>
+                      <strong>{survey.title}</strong>
+                      <span>Статус: {survey.status}</span>
+                    </div>
+                    <span>{survey.publishedAt ? new Date(survey.publishedAt).toLocaleString("ru-RU") : "Не опубликован"}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </article>
+        </section>
+      </div>
     </div>
   );
 }
