@@ -69,6 +69,9 @@ MVP веб-сервиса для создания и прохождения оп
 - `APP_ENV`
 - `BACKEND_HOST`
 - `BACKEND_PORT`
+- `FRONTEND_HOST_PORT`
+- `BACKEND_HOST_PORT`
+- `POSTGRES_HOST_PORT`
 - `JWT_SECRET_KEY`
 - `JWT_ALGORITHM`
 - `JWT_ACCESS_TOKEN_EXPIRE_MINUTES`
@@ -163,6 +166,34 @@ chmod +x scripts/deploy.sh
 APP_DIR=/opt/survey-service DEPLOY_BRANCH=main ./scripts/deploy.sh
 ```
 
+## Окружения на VPS
+
+Проект поддерживает два независимых окружения на одном сервере:
+
+- production: ветка `main`, каталог `/opt/survey-service`, публичный адрес `http://SERVER_IP`
+- staging: ветка `codex/visual-exploration`, каталог `/opt/survey-service-staging`, публичный адрес `http://SERVER_IP:8080`
+
+Эти окружения работают параллельно и не заменяют друг друга. У каждого свой каталог, свои контейнеры, своя база данных и свои порты.
+
+Чтобы это работало одновременно, в `.env` используются разные значения портов:
+
+- production: `FRONTEND_HOST_PORT=80`, `BACKEND_HOST_PORT=8000`, `POSTGRES_HOST_PORT=5432`
+- staging: `FRONTEND_HOST_PORT=8080`, `BACKEND_HOST_PORT=8001`, `POSTGRES_HOST_PORT=5433`
+
+Ручной деплой production:
+
+```bash
+cd /opt/survey-service
+APP_DIR=/opt/survey-service DEPLOY_BRANCH=main bash scripts/deploy.sh
+```
+
+Ручной деплой staging:
+
+```bash
+cd /opt/survey-service-staging
+APP_DIR=/opt/survey-service-staging DEPLOY_BRANCH=codex/visual-exploration bash scripts/deploy.sh
+```
+
 ## GitHub Actions
 
 Workflow `.github/workflows/ci-cd.yml` выполняет:
@@ -170,7 +201,8 @@ Workflow `.github/workflows/ci-cd.yml` выполняет:
 1. `frontend_checks`
 2. `backend_checks`
 3. `e2e_smoke`
-4. `deploy`
+4. `deploy` для ветки `main`
+5. `deploy_staging` для ветки `codex/visual-exploration`
 
 Для автодеплоя нужны GitHub Secrets:
 
@@ -188,6 +220,20 @@ Workflow `.github/workflows/ci-cd.yml` выполняет:
 Проверить состояние контейнеров:
 
 ```bash
+docker compose ps
+```
+
+Production:
+
+```bash
+cd /opt/survey-service
+docker compose ps
+```
+
+Staging:
+
+```bash
+cd /opt/survey-service-staging
 docker compose ps
 ```
 
@@ -212,6 +258,13 @@ docker compose restart postgres
 ```bash
 docker compose up -d --build
 ```
+
+Переключение между вариантами делается не командой `switch`, а адресом и веткой:
+
+- чтобы открыть production, используйте основной адрес сервера;
+- чтобы открыть staging, используйте тот же сервер с портом `8080`;
+- push в `main` обновляет production;
+- push в `codex/visual-exploration` обновляет staging.
 
 Сбросить базу данных:
 
