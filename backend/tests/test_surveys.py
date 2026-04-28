@@ -1,3 +1,5 @@
+"""Survey API tests for protected dashboard data."""
+
 def _register_and_login(client):
     client.post(
         "/api/auth/register",

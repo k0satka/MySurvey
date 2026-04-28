@@ -8,11 +8,13 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicOnlyRoute from "./routes/PublicOnlyRoute";
 
 function HomeRedirect() {
+  // Root URL chooses the right start page based on local auth state.
   const { isAuthenticated } = useAuth();
   return <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />;
 }
 
 function App() {
+  // Keep routing decisions here; pages should focus on their own UI and API calls.
   return (
     <BrowserRouter>
       <Routes>

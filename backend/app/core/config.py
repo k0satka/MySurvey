@@ -6,6 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    # pydantic-settings maps environment variables from .env/GitHub/VPS into typed Python fields.
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
@@ -30,6 +31,7 @@ class Settings(BaseSettings):
 
     @property
     def resolved_database_url(self) -> str:
+        # DATABASE_URL is convenient in CI; split POSTGRES_* fields are convenient in Docker Compose.
         if self.database_url:
             return self.database_url
         return (
@@ -60,4 +62,5 @@ class Settings(BaseSettings):
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
+    # Cache settings so every request does not re-read environment files.
     return Settings()

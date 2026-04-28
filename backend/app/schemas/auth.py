@@ -4,6 +4,7 @@ from app.schemas.base import AppModel
 
 
 class RegisterRequest(AppModel):
+    # Input contract for POST /api/auth/register.
     name: str = Field(min_length=2, max_length=100)
     email: EmailStr
     password: str = Field(min_length=8, max_length=128)
@@ -25,6 +26,7 @@ class LoginRequest(AppModel):
 
 
 class UserPublic(AppModel):
+    # External JSON uses userID/isAdmin while Python code stays snake_case.
     user_id: int = Field(serialization_alias="userID")
     name: str
     is_admin: bool = Field(serialization_alias="isAdmin")

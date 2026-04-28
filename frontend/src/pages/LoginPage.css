@@ -1,4 +1,5 @@
 ﻿/* --- Страница --- */
+/* External auth-page styling adapted to our real login flow and error messages. */
 .login-page {
     display: flex;
     align-items: center;

@@ -1,3 +1,5 @@
+"""Auth API contract tests for registration, login and error cases."""
+
 def test_register_user_success(client):
     response = client.post(
         "/api/auth/register",

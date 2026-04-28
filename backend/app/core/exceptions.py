@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 
 
 def api_http_exception(status_code: int, error: str, message: str) -> HTTPException:
+    # Keep API errors predictable for the frontend: every error has error + message.
     return HTTPException(status_code=status_code, detail={"error": error, "message": message})
 
 
@@ -13,6 +14,7 @@ async def http_exception_handler(_: Request, exc: HTTPException) -> JSONResponse
 
 
 async def validation_exception_handler(_: Request, exc: RequestValidationError) -> JSONResponse:
+    # Preserve detailed validation info so the frontend can show field-specific messages.
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
         content={

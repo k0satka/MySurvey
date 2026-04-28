@@ -1,3 +1,5 @@
+"""Health endpoint tests used by CI and deploy smoke checks."""
+
 def test_healthcheck(client):
     response = client.get("/api/health")
 

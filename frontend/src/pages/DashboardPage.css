@@ -1,4 +1,5 @@
 ﻿/* --- Страница --- */
+/* External dashboard styling adapted to real API data and an MVP empty state. */
 .dashboard-page {
     display: flex;
     flex-direction: column;

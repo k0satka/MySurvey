@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# One-time helper for a fresh Ubuntu/Debian VPS: installs Docker and opens HTTP/SSH ports.
 sudo apt-get update
 sudo apt-get install -y ca-certificates curl git gnupg lsb-release ufw
 

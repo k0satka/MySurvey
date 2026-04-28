@@ -8,6 +8,7 @@ import { useAuth } from "../providers/useAuth";
 import "./LoginPage.css";
 
 function LoginPage() {
+  // This page keeps the external visual layout but submits through our /api/auth/login helper.
   const navigate = useNavigate();
   const location = useLocation();
   const { signIn } = useAuth();
@@ -20,6 +21,7 @@ function LoginPage() {
   const redirectPath = location.state?.from || "/dashboard";
 
   const validateForm = useCallback(() => {
+    // Client-side validation prevents obvious 400 responses and gives faster feedback.
     const newErrors = {};
 
     if (!formData.email) {
@@ -52,6 +54,7 @@ function LoginPage() {
 
   const handleSubmit = useCallback(
     async (event) => {
+      // Successful login stores token + user in AuthProvider, then opens the protected dashboard.
       event.preventDefault();
 
       if (!validateForm()) {

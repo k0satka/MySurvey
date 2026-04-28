@@ -14,6 +14,7 @@ security_scheme = HTTPBearer(auto_error=False)
 def get_current_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(security_scheme),
 ) -> AuthenticatedUser:
+    # Shared dependency for protected routes: validate Bearer token and load the user from DB.
     if credentials is None:
         raise api_http_exception(401, "Unauthorized", "Требуется авторизация")
 

@@ -9,6 +9,7 @@ MIGRATIONS_DIR = Path(__file__).resolve().parents[2] / "migrations" / "sql"
 
 
 def _ensure_migrations_table(cursor) -> None:
+    # schema_migrations records which SQL files were applied and protects them with checksums.
     cursor.execute(
         """
         CREATE TABLE IF NOT EXISTS schema_migrations (
@@ -33,6 +34,7 @@ def run_migrations() -> list[str]:
             applied_checksums = {row[0]: row[1] for row in cursor.fetchall()}
 
         for migration_file in sorted(MIGRATIONS_DIR.glob("*.sql")):
+            # Migrations are append-only: edit a new file, never rewrite an applied one.
             sql = migration_file.read_text(encoding="utf-8")
             checksum = hashlib.sha256(sql.encode("utf-8")).hexdigest()
             applied_checksum = applied_checksums.get(migration_file.name)

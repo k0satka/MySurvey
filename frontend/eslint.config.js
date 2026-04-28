@@ -5,6 +5,7 @@ import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 
 export default [
+  // Shared lint rules for React source and Node-based config files.
   {
     ignores: ["dist"],
   },

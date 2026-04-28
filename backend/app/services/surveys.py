@@ -4,6 +4,7 @@ from app.schemas.surveys import SurveySummary
 
 
 def list_user_surveys(user_id: int) -> list[SurveySummary]:
+    # Convert database rows into API schemas so routes never expose raw SQL results directly.
     with get_db_connection() as connection:
         surveys = list_surveys_by_user_id(connection, user_id)
 

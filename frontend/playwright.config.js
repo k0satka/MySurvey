@@ -1,6 +1,7 @@
 import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
+  // E2E tests run against Docker Compose in CI and can target any URL via PLAYWRIGHT_BASE_URL.
   testDir: "./e2e",
   timeout: 30_000,
   use: {

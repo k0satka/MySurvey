@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("user can register, login and open dashboard", async ({ page }) => {
+  // Smoke test covers the current MVP happy path across frontend, backend and database.
   const uniqueEmail = `student-${Date.now()}@example.com`;
   const password = "strongpass123";
 

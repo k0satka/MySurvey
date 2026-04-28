@@ -6,6 +6,7 @@ from app.schemas.auth import LoginRequest, LoginResponse, RegisterRequest, Regis
 
 
 def register_user(payload: RegisterRequest) -> RegisterResponse:
+    # Service layer owns business rules: unique email, password hashing, response shape.
     with get_db_connection() as connection:
         existing_user = get_user_by_email(connection, payload.email)
         if existing_user is not None:
@@ -22,6 +23,7 @@ def register_user(payload: RegisterRequest) -> RegisterResponse:
 
 
 def login_user(payload: LoginRequest) -> LoginResponse:
+    # Login compares the submitted password with the stored hash and issues a short-lived JWT.
     with get_db_connection() as connection:
         user = get_user_by_email(connection, payload.email)
 

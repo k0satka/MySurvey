@@ -2,6 +2,7 @@ const JSON_HEADERS = {
   "Content-Type": "application/json",
 };
 
+// All frontend API helpers use this error type so pages can show consistent messages.
 export class ApiError extends Error {
   constructor(message, status, payload) {
     super(message);
@@ -12,6 +13,7 @@ export class ApiError extends Error {
 }
 
 export async function request(path, options = {}) {
+  // Use relative /api paths; Vite proxies them in dev and Nginx proxies them in production.
   const { method = "GET", body, token } = options;
   const headers = {
     ...(body ? JSON_HEADERS : {}),

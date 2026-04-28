@@ -5,6 +5,7 @@ import { AuthContext } from "./AuthContext";
 const AUTH_STORAGE_KEY = "survey-service-auth";
 
 function loadStoredAuth() {
+  // Restore session after reload; invalid JSON is treated as a logged-out state.
   const raw = localStorage.getItem(AUTH_STORAGE_KEY);
   if (!raw) {
     return { token: null, user: null };
@@ -19,6 +20,7 @@ function loadStoredAuth() {
 }
 
 export function AuthProvider({ children }) {
+  // MVP stores JWT in localStorage; later stages can move this to httpOnly cookies if needed.
   const [authState, setAuthState] = useState(loadStoredAuth);
 
   const signIn = (nextAuth) => {

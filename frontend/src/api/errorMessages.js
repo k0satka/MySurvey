@@ -7,6 +7,7 @@ const FIELD_LABELS = {
 };
 
 function getValidationDetailMessage(detail) {
+  // Backend returns Pydantic validation details; this maps them to user-friendly Russian text.
   const field = detail?.loc?.[detail.loc.length - 1];
   const label = FIELD_LABELS[field];
 

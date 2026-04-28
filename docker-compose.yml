@@ -1,4 +1,5 @@
 services:
+  # PostgreSQL stores users, surveys, questions and answers for local/prod Docker runs.
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
@@ -18,6 +19,7 @@ services:
       timeout: 5s
       retries: 10
 
+  # FastAPI API container. It waits for Postgres, runs migrations in start.sh, then serves /api.
   backend:
     build:
       context: ./backend
@@ -53,6 +55,7 @@ services:
       timeout: 5s
       retries: 10
 
+  # React build served by Nginx. Nginx also proxies /api to the backend container.
   frontend:
     build:
       context: ./frontend

@@ -1,3 +1,4 @@
+// Central icon barrel: pages import icons from here instead of deep SVG paths.
 export { default as IconArrowLeft} from './IconArrowLeft';
 export { default as IconArrowRight} from './IconArrowRight';
 export { default as IconChevronDown} from './IconChevronDown';
