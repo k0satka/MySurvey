@@ -1,16 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { ApiError } from "../api/client";
 import { getSurveys } from "../api/surveys";
-import {
-  IconClipboard,
-  IconDoorOpen,
-  IconFilter,
-  IconMoreVertical,
-  IconReload,
-  IconSearch,
-} from "../components/icons";
+import Footer from "../components/layout/Footer";
+import Header from "../components/layout/Header";
+import { IconFilter, IconMoreVertical, IconReload, IconSearch } from "../components/icons";
 import { useAuth } from "../providers/useAuth";
 import "./DashboardPage.css";
 
@@ -29,15 +24,24 @@ function DashboardPage() {
   const [surveys, setSurveys] = useState([]);
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+
+  const handleUnauthorized = useCallback(() => {
+    signOut();
+    navigate("/login", { replace: true });
+  }, [navigate, signOut]);
 
   useEffect(() => {
-    // Загружаем опросы после того, как protected route подтвердил наличие token.
     let active = true;
 
-    const fetchSurveys = async () => {
+    // Загружаем опросы после того, как protected route подтвердил наличие token.
+    if (!token) {
+      handleUnauthorized();
+      return undefined;
+    }
+
+    const loadInitialSurveys = async () => {
       try {
-        setLoading(true);
-        setError("");
         const response = await getSurveys(token);
 
         if (active) {
@@ -49,8 +53,7 @@ function DashboardPage() {
         }
 
         if (requestError instanceof ApiError && requestError.status === 401) {
-          signOut();
-          navigate("/login", { replace: true });
+          handleUnauthorized();
           return;
         }
 
@@ -62,19 +65,52 @@ function DashboardPage() {
       }
     };
 
-    fetchSurveys();
+    loadInitialSurveys();
 
     return () => {
       active = false;
     };
-  }, [navigate, signOut, token]);
+  }, [handleUnauthorized, token]);
+
+  const handleRetry = useCallback(async () => {
+    if (!token) {
+      handleUnauthorized();
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+      const response = await getSurveys(token);
+      setSurveys(response);
+    } catch (requestError) {
+      if (requestError instanceof ApiError && requestError.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+
+      setError("Не удалось загрузить опросы");
+    } finally {
+      setLoading(false);
+    }
+  }, [handleUnauthorized, token]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 300);
+
+    return () => window.clearTimeout(timer);
+  }, [searchQuery]);
 
   const filteredSurveys = useMemo(() => {
     // Поиск и фильтр статуса пока клиентские, потому что размер списка в MVP небольшой.
+    const query = debouncedQuery.trim().toLowerCase();
+
     return surveys
       .filter((survey) => (filter === "all" ? true : survey.status === filter))
-      .filter((survey) => survey.title.toLowerCase().includes(searchQuery.trim().toLowerCase()));
-  }, [filter, searchQuery, surveys]);
+      .filter((survey) => (query ? survey.title.toLowerCase().includes(query) : true));
+  }, [debouncedQuery, filter, surveys]);
 
   const handleLogout = () => {
     signOut();
@@ -88,15 +124,7 @@ function DashboardPage() {
 
   return (
     <div className="page dashboard-page">
-      <header className="site-header">
-        <button className="header-logo" type="button" onClick={() => navigate("/dashboard")} aria-label="Открыть dashboard">
-          <IconClipboard className="icon-primary" />
-        </button>
-        <h1 className="text-h1 dashboard-title-label">Сервис опросов</h1>
-        <button type="button" className="header-button-logout" onClick={handleLogout} aria-label="Выйти">
-          <IconDoorOpen className="icon-primary" />
-        </button>
-      </header>
+      <Header onLogout={handleLogout} />
 
       <div className="dashboard-controls">
         <button type="button" className="button-primary dashboard-button-create" disabled title="Конструктор появится позже">
@@ -132,7 +160,7 @@ function DashboardPage() {
         ) : error ? (
           <div className="frame dashboard-surveys-error">
             <p className="text-h2">{error}</p>
-            <button type="button" className="button-primary dashboard-button-retry" onClick={() => window.location.reload()}>
+            <button type="button" className="button-primary dashboard-button-retry" onClick={handleRetry}>
               <IconReload className="icon-primary" color="#FFFFFF" />
               <span>Повторить</span>
             </button>
@@ -168,10 +196,7 @@ function DashboardPage() {
         )}
       </div>
 
-      <footer className="site-footer">
-        <p className="text-helper">© 2026 Сервис опросов. Все права защищены.</p>
-        <p className="text-helper">MVP для создания и прохождения онлайн-опросов</p>
-      </footer>
+      <Footer />
     </div>
   );
 }
