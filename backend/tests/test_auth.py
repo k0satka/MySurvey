@@ -1,4 +1,4 @@
-"""Auth API contract tests for registration, login and error cases."""
+"""Тесты контракта Auth API для регистрации, входа и ошибок."""
 
 def test_register_user_success(client):
     response = client.post(

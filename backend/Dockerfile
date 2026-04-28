@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-# Backend image keeps only runtime dependencies and starts through start.sh.
+# Backend-образ содержит только runtime-зависимости и запускается через start.sh.
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 

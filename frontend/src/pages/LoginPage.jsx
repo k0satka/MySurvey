@@ -8,7 +8,7 @@ import { useAuth } from "../providers/useAuth";
 import "./LoginPage.css";
 
 function LoginPage() {
-  // This page keeps the external visual layout but submits through our /api/auth/login helper.
+  // Эта страница сохраняет внешний визуальный layout, но отправляет данные через наш помощник /api/auth/login.
   const navigate = useNavigate();
   const location = useLocation();
   const { signIn } = useAuth();
@@ -21,7 +21,7 @@ function LoginPage() {
   const redirectPath = location.state?.from || "/dashboard";
 
   const validateForm = useCallback(() => {
-    // Client-side validation prevents obvious 400 responses and gives faster feedback.
+    // Клиентская валидация предотвращает очевидные 400-ответы и быстрее даёт обратную связь.
     const newErrors = {};
 
     if (!formData.email) {
@@ -54,7 +54,7 @@ function LoginPage() {
 
   const handleSubmit = useCallback(
     async (event) => {
-      // Successful login stores token + user in AuthProvider, then opens the protected dashboard.
+      // Успешный login сохраняет token + user в AuthProvider и открывает защищённый dashboard.
       event.preventDefault();
 
       if (!validateForm()) {

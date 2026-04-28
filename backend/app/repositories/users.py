@@ -2,7 +2,7 @@ from psycopg2.extras import RealDictCursor
 
 
 def get_user_by_email(connection, email: str) -> dict | None:
-    # Repositories contain SQL only; callers decide what the result means.
+    # Репозитории содержат только SQL, а смысл результата определяют вызывающие слои.
     with connection.cursor(cursor_factory=RealDictCursor) as cursor:
         cursor.execute(
             """
@@ -29,7 +29,7 @@ def get_user_by_id(connection, user_id: int) -> dict | None:
 
 
 def create_user(connection, *, name: str, email: str, password_hash: str) -> dict:
-    # RETURNING lets the service build the response without an extra SELECT.
+    # RETURNING позволяет сервису собрать ответ без дополнительного SELECT.
     with connection.cursor(cursor_factory=RealDictCursor) as cursor:
         cursor.execute(
             """

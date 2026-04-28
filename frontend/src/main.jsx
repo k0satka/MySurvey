@@ -5,7 +5,7 @@ import App from "./App";
 import { AuthProvider } from "./providers/AuthProvider";
 import "./styles/base.css";
 
-// AuthProvider wraps the whole app so routes and pages can read the current session.
+// AuthProvider оборачивает всё приложение, чтобы routes и страницы могли читать текущую сессию.
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>

@@ -5,7 +5,7 @@ import psycopg2
 from app.core.config import get_settings
 
 
-# Migration tests protect the SQL schema workflow.
+# Тесты миграций защищают workflow SQL-схемы.
 
 def test_required_tables_exist():
     assert os.environ["DATABASE_URL"]

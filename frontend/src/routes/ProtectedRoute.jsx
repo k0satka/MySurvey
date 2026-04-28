@@ -3,7 +3,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../providers/useAuth";
 
 function ProtectedRoute({ children }) {
-  // Dashboard and future private pages must pass through this route guard.
+  // Dashboard и будущие приватные страницы должны проходить через этот route guard.
   const { isAuthenticated } = useAuth();
   const location = useLocation();
 

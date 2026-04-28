@@ -1,4 +1,4 @@
 import { createContext } from "react";
 
-// Shared auth context consumed through useAuth() instead of importing React context directly.
+// Общий auth context используется через useAuth(), без прямого импорта React context.
 export const AuthContext = createContext(null);

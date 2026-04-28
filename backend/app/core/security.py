@@ -9,7 +9,7 @@ password_hasher = PasswordHash.recommended()
 
 
 def hash_password(password: str) -> str:
-    # Store only Argon2 password hashes, never raw passwords.
+    # Храним только Argon2-хеши паролей, никогда не храним исходные пароли.
     return password_hasher.hash(password)
 
 
@@ -18,7 +18,7 @@ def verify_password(password: str, password_hash: str) -> bool:
 
 
 def create_access_token(subject: str) -> str:
-    # The user id is stored in JWT "sub" and later restored in api/deps.py.
+    # ID пользователя хранится в JWT-поле "sub" и затем восстанавливается в api/deps.py.
     settings = get_settings()
     expire_at = datetime.now(timezone.utc) + timedelta(minutes=settings.jwt_access_token_expire_minutes)
     payload = {"sub": subject, "exp": expire_at}

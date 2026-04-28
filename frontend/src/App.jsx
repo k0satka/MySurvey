@@ -8,13 +8,13 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicOnlyRoute from "./routes/PublicOnlyRoute";
 
 function HomeRedirect() {
-  // Root URL chooses the right start page based on local auth state.
+  // Корневой URL выбирает стартовую страницу по локальному состоянию авторизации.
   const { isAuthenticated } = useAuth();
   return <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />;
 }
 
 function App() {
-  // Keep routing decisions here; pages should focus on their own UI and API calls.
+  // Решения по маршрутизации держим здесь; страницы занимаются своим UI и API-вызовами.
   return (
     <BrowserRouter>
       <Routes>

@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  # Verifies the React app before anything can be deployed.
+  # Проверяет React-приложение до любого деплоя.
   frontend_checks:
     runs-on: ubuntu-latest
     defaults:
@@ -26,7 +26,7 @@ jobs:
       - run: npm run lint
       - run: npm run build
 
-  # Runs FastAPI tests against a real PostgreSQL service, matching production behavior better than mocks.
+  # Запускает тесты FastAPI на реальном PostgreSQL, чтобы поведение было ближе к production.
   backend_checks:
     runs-on: ubuntu-latest
     services:
@@ -67,7 +67,7 @@ jobs:
           JWT_SECRET_KEY: test-secret-key
         run: pytest backend/tests -q
 
-  # Boots the full stack with Docker Compose and checks the main user journey in a browser.
+  # Поднимает весь стек через Docker Compose и проверяет основной пользовательский сценарий в браузере.
   e2e_smoke:
     runs-on: ubuntu-latest
     needs:
@@ -118,7 +118,7 @@ jobs:
         if: always()
         run: docker compose down -v
 
-  # Production deploy runs only after all checks pass on pushes to main.
+  # Production-деплой запускается только после успешных проверок при push в main.
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest

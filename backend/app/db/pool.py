@@ -10,7 +10,7 @@ _connection_pool: SimpleConnectionPool | None = None
 
 
 def init_db_pool() -> None:
-    # psycopg2 connections are pooled because opening a new DB connection per request is expensive.
+    # Соединения psycopg2 лежат в пуле, потому что открывать новое соединение на каждый запрос дорого.
     global _connection_pool
     if _connection_pool is not None:
         return
@@ -32,7 +32,7 @@ def close_db_pool() -> None:
 
 @contextmanager
 def get_db_connection() -> Iterator[PsycopgConnection]:
-    # Repository functions use this context manager; successful blocks commit, failed blocks rollback.
+    # Функции репозиториев используют этот context manager: успешные блоки commit, упавшие rollback.
     global _connection_pool
     if _connection_pool is None:
         init_db_pool()

@@ -1,4 +1,4 @@
-"""Survey API tests for protected dashboard data."""
+"""Тесты Survey API для защищённых данных dashboard."""
 
 def _register_and_login(client):
     client.post(

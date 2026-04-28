@@ -1,7 +1,7 @@
 import { request } from "./client";
 
 export function getSurveys(token) {
-  // Dashboard data is protected, so the JWT is sent as Bearer token.
+  // Данные dashboard защищены, поэтому JWT отправляется как Bearer token.
   return request("/api/surveys", {
     token,
   });

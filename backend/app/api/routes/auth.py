@@ -8,11 +8,11 @@ router = APIRouter()
 
 @router.post("/register", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED)
 def register(payload: RegisterRequest) -> RegisterResponse:
-    # The route only handles HTTP concerns; user creation rules live in services/auth.py.
+    # Route отвечает только за HTTP-слой; правила создания пользователя живут в services/auth.py.
     return register_user(payload)
 
 
 @router.post("/login", response_model=LoginResponse)
 def login(payload: LoginRequest) -> LoginResponse:
-    # Login returns a JWT and public user data for AuthProvider on the frontend.
+    # Login возвращает JWT и публичные данные пользователя для AuthProvider на frontend.
     return login_user(payload)

@@ -2,7 +2,7 @@ const JSON_HEADERS = {
   "Content-Type": "application/json",
 };
 
-// All frontend API helpers use this error type so pages can show consistent messages.
+// Все frontend API helpers используют этот тип ошибки, чтобы страницы показывали единые сообщения.
 export class ApiError extends Error {
   constructor(message, status, payload) {
     super(message);

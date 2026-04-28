@@ -15,7 +15,7 @@ TEST_DATABASE_URL = os.getenv(
     os.getenv("DATABASE_URL", "postgresql://survey_user:survey_password@localhost:5432/survey_service_test"),
 )
 
-# Tests point the app at an isolated database and clean tables before each test.
+# Тесты направляют приложение в изолированную БД и очищают таблицы перед каждым тестом.
 os.environ.setdefault("APP_ENV", "test")
 os.environ.setdefault("DATABASE_URL", TEST_DATABASE_URL)
 os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key")
@@ -30,7 +30,7 @@ from app.main import app
 
 @pytest.fixture(scope="session", autouse=True)
 def migrated_database():
-    # Apply the real SQL migrations once so tests exercise the production schema.
+    # Один раз применяем реальные SQL-миграции, чтобы тесты проверяли production-схему.
     run_migrations()
     yield
     close_db_pool()
@@ -38,7 +38,7 @@ def migrated_database():
 
 @pytest.fixture(autouse=True)
 def clean_database():
-    # Keep tests independent while preserving the schema between test cases.
+    # Держим тесты независимыми, но сохраняем схему между test cases.
     with psycopg2.connect(**get_settings().resolved_database_config) as connection:
         with connection.cursor() as cursor:
             cursor.execute(
@@ -50,7 +50,7 @@ def clean_database():
 
 @pytest.fixture
 def client():
-    # TestClient starts FastAPI lifespan, including the database pool lifecycle.
+    # TestClient запускает FastAPI lifespan, включая жизненный цикл пула БД.
     close_db_pool()
     with TestClient(app) as test_client:
         yield test_client

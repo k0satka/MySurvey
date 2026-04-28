@@ -7,7 +7,7 @@ import { IconEye, IconEyeOff, IconLock, IconMail, IconUser } from "../components
 import "./RegisterPage.css";
 
 function RegisterPage() {
-  // Register adapts the external form to our backend contract: name, email, password.
+  // Register адаптирует внешнюю форму под контракт backend: name, email, password.
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ name: "", email: "", password: "", passwordConfirmation: "" });
   const [errors, setErrors] = useState({});
@@ -16,7 +16,7 @@ function RegisterPage() {
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
   const validateForm = useCallback(() => {
-    // Match backend constraints before sending the request: name >= 2, password >= 8.
+    // Проверяем ограничения backend перед запросом: name >= 2, password >= 8.
     const newErrors = {};
 
     if (!formData.name) {
@@ -61,7 +61,7 @@ function RegisterPage() {
 
   const handleRegister = useCallback(
     async (event) => {
-      // Register endpoint does not return a token yet, so users continue through /login.
+      // Register endpoint пока не возвращает token, поэтому пользователь продолжает через /login.
       event.preventDefault();
 
       if (!validateForm()) {

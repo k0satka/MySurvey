@@ -2,7 +2,7 @@ from app.schemas.base import AppModel
 
 
 class HealthResponse(AppModel):
-    # Small response used for uptime checks in Docker, CI and deployment smoke tests.
+    # Небольшой ответ для проверки доступности в Docker, CI и deploy smoke-тестах.
     status: str
     environment: str
     version: str

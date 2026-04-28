@@ -1,4 +1,4 @@
-// Central icon barrel: pages import icons from here instead of deep SVG paths.
+// Центральный barrel-файл иконок: страницы импортируют иконки отсюда, а не из глубоких SVG-путей.
 export { default as IconArrowLeft} from './IconArrowLeft';
 export { default as IconArrowRight} from './IconArrowRight';
 export { default as IconChevronDown} from './IconChevronDown';

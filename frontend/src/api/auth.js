@@ -9,7 +9,7 @@ export function registerUser(payload) {
 }
 
 export function loginUser(payload) {
-  // Login returns { token, user }, which AuthProvider stores as the current session.
+  // Login возвращает { token, user }, которые AuthProvider сохраняет как текущую сессию.
   return request("/api/auth/login", {
     method: "POST",
     body: payload,

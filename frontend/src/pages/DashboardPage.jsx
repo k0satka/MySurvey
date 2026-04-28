@@ -21,7 +21,7 @@ const STATUS_LABELS = {
 };
 
 function DashboardPage() {
-  // Dashboard uses the external layout, but loads real survey summaries from the protected API.
+  // Dashboard использует внешний layout, но загружает реальные summaries опросов из защищённого API.
   const navigate = useNavigate();
   const { token, signOut } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -31,7 +31,7 @@ function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    // Load surveys once the protected route confirms that a token exists.
+    // Загружаем опросы после того, как protected route подтвердил наличие token.
     let active = true;
 
     const fetchSurveys = async () => {
@@ -70,7 +70,7 @@ function DashboardPage() {
   }, [navigate, signOut, token]);
 
   const filteredSurveys = useMemo(() => {
-    // Search and status filter are client-side for the current MVP list size.
+    // Поиск и фильтр статуса пока клиентские, потому что размер списка в MVP небольшой.
     return surveys
       .filter((survey) => (filter === "all" ? true : survey.status === filter))
       .filter((survey) => survey.title.toLowerCase().includes(searchQuery.trim().toLowerCase()));

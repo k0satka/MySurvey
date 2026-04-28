@@ -5,7 +5,7 @@ from app.api.routes.health import router as health_router
 from app.api.routes.surveys import router as surveys_router
 
 api_router = APIRouter()
-# Route groups stay small and focused; main.py mounts this router under /api.
+# Группы маршрутов остаются маленькими и сфокусированными; main.py подключает этот router под /api.
 api_router.include_router(health_router, tags=["health"])
 api_router.include_router(auth_router, prefix="/auth", tags=["auth"])
 api_router.include_router(surveys_router, prefix="/surveys", tags=["surveys"])

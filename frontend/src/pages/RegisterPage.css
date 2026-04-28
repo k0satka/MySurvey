@@ -1,5 +1,5 @@
-﻿/* --- Страница --- */
-/* External registration styling adapted to our name/email/password API contract. */
+/* --- Страница --- */
+/* Стили внешней регистрации адаптированы под наш API-контракт name/email/password. */
 .register-page {
     display: flex;
     align-items: center;

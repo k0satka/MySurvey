@@ -10,5 +10,5 @@ router = APIRouter()
 
 @router.get("", response_model=list[SurveySummary])
 def get_surveys(current_user: AuthenticatedUser = Depends(get_current_user)) -> list[SurveySummary]:
-    # Only the owner sees their surveys; get_current_user comes from the Bearer token.
+    # Пользователь видит только свои опросы; get_current_user берётся из Bearer token.
     return list_user_surveys(current_user.user_id)

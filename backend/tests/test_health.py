@@ -1,4 +1,4 @@
-"""Health endpoint tests used by CI and deploy smoke checks."""
+"""Тесты health endpoint для CI и deploy smoke-проверок."""
 
 def test_healthcheck(client):
     response = client.get("/api/health")

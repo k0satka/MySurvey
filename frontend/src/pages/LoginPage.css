@@ -1,5 +1,5 @@
-﻿/* --- Страница --- */
-/* External auth-page styling adapted to our real login flow and error messages. */
+/* --- Страница --- */
+/* Стили внешней страницы входа адаптированы под наш реальный login-flow и сообщения об ошибках. */
 .login-page {
     display: flex;
     align-items: center;
