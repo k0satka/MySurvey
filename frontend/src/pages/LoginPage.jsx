@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { loginUser } from "../api/auth";
-import { ApiError } from "../api/client";
+import { getApiErrorMessage } from "../api/errorMessages";
 import { IconEye, IconEyeOff, IconLock, IconMail } from "../components/icons";
 import { useAuth } from "../providers/useAuth";
 import "./LoginPage.css";
@@ -11,113 +11,165 @@ function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { signIn } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const successMessage = location.state?.message || "";
   const redirectPath = location.state?.from || "/dashboard";
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((current) => ({ ...current, [name]: value }));
-    setError("");
-  };
+  const validateForm = useCallback(() => {
+    const newErrors = {};
 
-  const handleLogin = async () => {
-    setIsSubmitting(true);
-    setError("");
-
-    try {
-      const response = await loginUser(formData);
-      signIn({ token: response.token, user: response.user });
-      navigate(redirectPath, { replace: true });
-    } catch (requestError) {
-      if (requestError instanceof ApiError) {
-        setError(requestError.payload?.message || "Не удалось выполнить вход");
-      } else {
-        setError("Не удалось выполнить вход");
-      }
-    } finally {
-      setIsSubmitting(false);
+    if (!formData.email) {
+      newErrors.email = "Email обязателен";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Неверный формат email";
     }
-  };
+
+    if (!formData.password) {
+      newErrors.password = "Пароль обязателен";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Пароль должен содержать не менее 8 символов";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }, [formData]);
+
+  const handleInputChange = useCallback(
+    (event) => {
+      const { name, value } = event.target;
+      setFormData((current) => ({ ...current, [name]: value }));
+
+      if (errors[name] || errors.general) {
+        setErrors((current) => ({ ...current, [name]: "", general: "" }));
+      }
+    },
+    [errors],
+  );
+
+  const handleSubmit = useCallback(
+    async (event) => {
+      event.preventDefault();
+
+      if (!validateForm()) {
+        return;
+      }
+
+      setLoading(true);
+      setErrors({});
+
+      try {
+        const response = await loginUser({
+          email: formData.email.trim().toLowerCase(),
+          password: formData.password,
+        });
+        signIn({ token: response.token, user: response.user });
+        navigate(redirectPath, { replace: true });
+      } catch (error) {
+        setErrors({ general: getApiErrorMessage(error, "Не удалось выполнить вход") });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [formData, navigate, redirectPath, signIn, validateForm],
+  );
 
   return (
     <div className="page login-page">
-      <div className="frame login-frame">
+      <form className="frame login-frame" onSubmit={handleSubmit} noValidate>
         <div className="login-title-group">
-          <div className="login-title-label">Авторизация</div>
+          <h1 className="text-h1 dashboard-title-label">Авторизация</h1>
           <div className="login-title-line" />
         </div>
 
         {successMessage ? <div className="form-success">{successMessage}</div> : null}
-        {error ? <div className="form-error">{error}</div> : null}
 
         <div className="login-input-group">
-          <div className="login-input-label">Email</div>
+          <label htmlFor="email" className="login-input-label text-small">
+            Email <span className="required-star">*</span>
+          </label>
           <div className="login-input-wrapper">
-            <IconMail width={24} height={24} />
+            <IconMail className="icon-secondary" />
             <input
-              className="login-input-field"
+              className="text-helper login-input-field"
+              id="email"
               name="email"
               type="email"
-              placeholder="Введите ваш email"
+              placeholder="email@example.com"
               value={formData.email}
-              onChange={handleChange}
+              onChange={handleInputChange}
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? "email-error" : undefined}
               autoComplete="email"
             />
           </div>
           <div className="login-input-line" />
+          {errors.email ? (
+            <p id="email-error" className="text-helper error-frame">
+              {errors.email}
+            </p>
+          ) : null}
         </div>
 
         <div className="login-input-group">
-          <div className="login-input-label">Пароль</div>
+          <label htmlFor="password" className="login-input-label text-small">
+            Пароль <span className="required-star">*</span>
+          </label>
           <div className="login-password-wrapper">
             <div className="login-input-wrapper">
-              <IconLock width={24} height={24} />
+              <IconLock className="icon-secondary" />
               <input
-                className="login-input-field"
+                className="text-helper login-input-field"
+                id="password"
                 name="password"
-                type={showPassword ? "text" : "password"}
+                type={isPasswordVisible ? "text" : "password"}
                 placeholder="Введите ваш пароль"
                 value={formData.password}
-                onChange={handleChange}
+                onChange={handleInputChange}
+                aria-invalid={Boolean(errors.password)}
+                aria-describedby={errors.password ? "password-error" : undefined}
                 autoComplete="current-password"
               />
             </div>
             <button
-              className="login-password-toggle"
               type="button"
-              onClick={() => setShowPassword((current) => !current)}
-              aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
+              className="login-password-toggle"
+              onClick={() => setIsPasswordVisible((current) => !current)}
+              aria-label={isPasswordVisible ? "Скрыть пароль" : "Показать пароль"}
             >
-              {showPassword ? <IconEyeOff width={24} height={24} /> : <IconEye width={24} height={24} />}
+              {isPasswordVisible ? <IconEyeOff className="icon-secondary" /> : <IconEye className="icon-secondary" />}
             </button>
           </div>
           <div className="login-input-line" />
+          {errors.password ? (
+            <p id="password-error" className="text-helper error-frame">
+              {errors.password}
+            </p>
+          ) : null}
         </div>
 
-        <button
-          className="button-primary login-button-primary"
-          type="button"
-          onClick={handleLogin}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Входим..." : "Войти"}
-        </button>
+        <div className="login-submit-group">
+          {errors.general ? (
+            <div className="error-frame" role="alert">
+              {errors.general}
+            </div>
+          ) : null}
+
+          <button type="submit" className="button-primary login-button-primary" disabled={loading}>
+            {loading ? "Вход..." : "Войти"}
+          </button>
+        </div>
 
         <div className="login-register-group">
-          <div className="login-register-text">Если у вас нет аккаунта</div>
-          <button className="login-register-link" type="button" onClick={() => navigate("/register")}>
+          <p className="text-small">Если у вас нет аккаунта</p>
+          <button type="button" className="text-small login-register-link" onClick={() => navigate("/register")}>
             Вы можете зарегистрироваться здесь!
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

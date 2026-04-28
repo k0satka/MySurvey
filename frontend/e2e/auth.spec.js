@@ -19,6 +19,6 @@ test("user can register, login and open dashboard", async ({ page }) => {
   await page.locator(".login-button-primary").click();
 
   await expect(page).toHaveURL(/\/dashboard$/);
-  await expect(page.locator(".dashboard-title-label")).toHaveText("Личный кабинет");
+  await expect(page.locator(".dashboard-title-label")).toHaveText("Сервис опросов");
   await expect(page.locator(".dashboard-empty strong")).toHaveText("Пока нет ни одного опроса.");
 });

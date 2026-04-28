@@ -1,165 +1,252 @@
+﻿/* --- Страница --- */
 .dashboard-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 48px;
 }
 
-.dashboard-frame {
-  width: min(1120px, 100%);
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
+/* --- Header --- */
+.header-logo {
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
-.dashboard-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
+.header-button-logout {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
-.dashboard-title-group {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
+/* --- Управление опросами --- */
+.dashboard-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 75%;
 }
 
-.dashboard-title-label {
-  font-family: "Poppins", sans-serif;
-  font-size: 28px;
-  font-weight: 600;
-  color: #222222;
+.dashboard-button-create {
+    width: 18%;
+    height: 50px;
+    font-size: 20px;
 }
 
-.dashboard-title-line {
-  width: 100%;
-  height: 0;
-  border-bottom: 2px solid #777777;
+.dashboard-create-short{
+    display: none;
 }
 
-.dashboard-logout {
-  width: 140px;
-  min-height: 50px;
-  flex-shrink: 0;
+.dashboard-search-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px 24px;
+    gap: 8px;
+    border-radius: 50px;
+    width: 70%;
+    height: 50px;
 }
 
-.dashboard-section {
-  display: grid;
-  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
-  gap: 24px;
+.dashboard-search-field {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
 }
 
-.dashboard-card {
-  border: 1.5px solid #d7d7d7;
-  border-radius: 24px;
-  padding: 24px;
+.dashboard-search-field::placeholder {
+    color: var(--color-text);
 }
 
-.dashboard-card h2 {
-  font-size: 22px;
-  font-weight: 600;
-  color: #222222;
-  margin-bottom: 16px;
+.dashboard-button-filter {
+    width: 9%;
+    height: 50px;
 }
 
-.dashboard-card p {
-  font-size: 15px;
-  line-height: 1.5;
-  color: #555555;
+/* --- Опросы --- */
+.dashboard-surveys-group {
+    width: 75%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.dashboard-metadata {
-  display: grid;
-  gap: 12px;
+/* Ошибка */
+.dashboard-surveys-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 24px;
+    width: fit-content;
+    height: fit-content;
 }
 
-.dashboard-metadata div {
-  border-radius: 18px;
-  background-color: #f7fbfe;
-  padding: 14px 16px;
+.dashboard-button-retry {
+    width: fit-content;
+    height: 50px;
+    padding: 0 16px;
+    font-size: 20px;
+    gap: 8px;
 }
 
-.dashboard-metadata dt {
-  font-size: 13px;
-  font-weight: 500;
-  color: #777777;
-  margin-bottom: 6px;
-}
-
-.dashboard-metadata dd {
-  font-size: 16px;
-  color: #222222;
+/* Пустой список опросов */
+.dashboard-surveys-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: 50px;
 }
 
 .dashboard-empty {
-  margin-top: 24px;
-  min-height: 180px;
-  border-radius: 20px;
-  border: 1.5px dashed #a4bfd3;
-  background-color: #f7fbfe;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  text-align: center;
-  padding: 24px;
-  color: #555555;
+    text-align: center;
 }
 
-.dashboard-survey-list {
-  list-style: none;
-  margin-top: 24px;
-  display: grid;
-  gap: 14px;
+.dashboard-empty strong {
+    display: block;
 }
 
-.dashboard-survey-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  border-radius: 18px;
-  background-color: #f7fbfe;
-  padding: 16px 18px;
-}
-
-.dashboard-survey-item strong {
-  display: block;
-  margin-bottom: 4px;
-  color: #222222;
-}
-
-.dashboard-survey-item span {
-  color: #555555;
-}
-
-@media (max-width: 900px) {
-  .dashboard-page {
-    padding: 16px;
-  }
-
-  .dashboard-frame {
+/* Сетка опросов */
+.dashboard-surveys-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 48px 32px;
     width: 100%;
-    gap: 24px;
-  }
+}
 
-  .dashboard-header {
-    flex-direction: column;
-  }
-
-  .dashboard-section {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-logout {
-    width: 100%;
-  }
-
-  .dashboard-survey-item {
+.dashboard-survey-card {
+    display: flex;
     flex-direction: column;
     align-items: flex-start;
-  }
+    gap: 24px;
+    padding: 24px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.dashboard-survey-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+}
+
+.dashboard-survey-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dashboard-survey-actions {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/*
+.dashboard-survey-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+}
+*/
+
+@media (max-width: 1400px) {
+    .dashboard-surveys-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 32px 24px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .dashboard-surveys-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 32px 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-page {
+        gap: 32px;
+    }
+
+    .dashboard-controls {
+        width: 90%;
+    }
+
+    .dashboard-button-create {
+        width: 17%;
+        height: 44px;
+    }
+
+    .dashboard-create-full {
+        display: none
+    }
+
+    .dashboard-create-short{
+        font-size: 24px;
+        font-weight: var(--font-weight-medium);
+        display: inline
+    }
+
+    .dashboard-search-wrapper {
+        padding: 8px 16px;
+        gap: 6px;
+        border-radius: 50px;
+        width: calc(65% - 16px);
+        height: 44px;
+    }
+
+    .dashboard-button-filter {
+        width: 17%;
+        height: 44px;
+    }
+
+    .dashboard-surveys-error {
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .dashboard-button-retry {
+        height: 44px;
+        padding: 0 12px;
+        font-size: 18px;
+    }
+
+    .dashboard-surveys-empty {
+        height: fit-content;
+        padding: 16px;
+        word-break: break-word;
+    }
+
+    .dashboard-surveys-group {
+        width: 90%;
+        flex: 1;
+    }
+
+    .dashboard-surveys-grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+        gap: 24px;
+    }
 }
