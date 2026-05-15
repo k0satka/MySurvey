@@ -13,7 +13,7 @@ function DashboardPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [surveys, setSurveys] = useState([]);
-    const [filter, setFilter] = useState('all');    // 'all', 'published', 'draft', 'closed'
+    //const [filter, setFilter] = useState('all');    // 'all', 'published', 'draft', 'closed'
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
     
@@ -136,7 +136,7 @@ function DashboardPage() {
                 try {
                     const errorData = await response.json();
                     errorMessage = errorData.message || errorData.error || errorMessage;
-                } catch {}
+                } catch {err}
                 throw new Error(errorMessage);
             }
 
