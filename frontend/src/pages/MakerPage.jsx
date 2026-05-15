@@ -150,6 +150,7 @@ function MakerPage() {
     }, [surveyId, token, navigate, signOut]);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchSurvey();
     }, [fetchSurvey]);
 
