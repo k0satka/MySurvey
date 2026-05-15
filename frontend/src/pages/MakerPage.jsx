@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../providers/useAuth';
@@ -73,6 +74,7 @@ function MakerPage() {
     const [questions, setQuestions] = useState([createNewQuestion(1)]);
     const [isEditable, setIsEditable] = useState(true);
     const [loading, setLoading] = useState(false);
+    // eslint-disable-next-line no-unused-vars
     const [_error, setError] = useState('');
     const [_success, setSuccess] = useState('');
     const [validationErrors, setValidationErrors] = useState({});

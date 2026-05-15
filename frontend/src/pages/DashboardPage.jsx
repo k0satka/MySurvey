@@ -1,4 +1,5 @@
-﻿import { useEffect, useState, useCallback, useMemo } from 'react';
+﻿/* eslint-disable no-unused-vars */
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../providers/useAuth';
 import './DashboardPage.scss';
@@ -13,6 +14,7 @@ function DashboardPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [surveys, setSurveys] = useState([]);
+    // eslint-disable-next-line no-unused-vars
     const [_filter, setFilter] = useState('all');    // 'all', 'published', 'draft', 'closed'
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
