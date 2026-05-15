@@ -5,7 +5,7 @@ import './MakerPage.scss';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import QuestionCard from '../components/layout/MakerQuestionCard';
-import { IconArrowLeft } from '../components/icons';
+import { IconArrowLeft, IconGripHorizontal, IconX } from '../components/icons';
 
 function MakerPage() {
     {/* --- Функции-помощники --- */}
@@ -73,8 +73,8 @@ function MakerPage() {
     const [questions, setQuestions] = useState([createNewQuestion(1)]);
     const [isEditable, setIsEditable] = useState(true);
     const [loading, setLoading] = useState(false);
-    //const [error, setError] = useState('');
-    //const [success, setSuccess] = useState('');
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const [validationErrors, setValidationErrors] = useState({});
 
     {/* --- Загрузка данных опроса при монтировании --- */}
@@ -125,8 +125,8 @@ function MakerPage() {
                 try {
                     const errorData = await response.json();
                     errorMessage = errorData.message || errorData.error || errorMessage;
-                } catch {
-                    // Если не удалось распарсить JSON, оставляем стандартное сообщение
+                } catch (err) {
+                    console.error('Error parsing error response:', err);
                 }
                 throw new Error(errorMessage);
             }
