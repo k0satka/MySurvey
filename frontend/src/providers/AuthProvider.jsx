@@ -31,7 +31,7 @@ function loadStoredAuth() {
 
 export function AuthProvider({ children }) {
   const [authState, setAuthState] = useState(() => loadStoredAuth());
-  const [isLoading, setIsLoading] = useState(false);
+  //const [isLoading, setIsLoading] = useState(false);
 
   const signIn = (nextAuth) => {
     setAuthState(nextAuth);
@@ -47,11 +47,11 @@ export function AuthProvider({ children }) {
     () => ({
       ...authState,
       isAuthenticated: Boolean(authState.token && authState.user),
-      isLoading,
+      //isLoading,
       signIn,
       signOut,
     }),
-    [authState, isLoading],
+    [authState/*, isLoading*/],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

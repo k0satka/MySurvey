@@ -13,7 +13,7 @@ function DashboardPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [surveys, setSurveys] = useState([]);
-    const [filter, setFilter] = useState('all');    // 'all', 'published', 'draft', 'closed'
+    const [_filter, setFilter] = useState('all');    // 'all', 'published', 'draft', 'closed'
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
     
@@ -83,15 +83,15 @@ function DashboardPage() {
 
     const filteredSurveys = useMemo(() => {
         let result = surveys;
-        if (filter !== 'all') {
-            result = result.filter(s => s.status === filter);
+        if (_filter !== 'all') {
+            result = result.filter(s => s.status === _filter);
         }
         if (debouncedQuery.trim()) {
             const q = debouncedQuery.toLowerCase();
             result = result.filter(s => s.title.toLowerCase().includes(q));
         }
         return result;
-    }, [surveys, filter, debouncedQuery]);
+    }, [surveys, _filter, debouncedQuery]);
 
     {/* --- Обработчики действий пользователя --- */}
     const handleLogout = useCallback(async () => {
