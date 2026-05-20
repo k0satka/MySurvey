@@ -4,6 +4,7 @@ import { useAuth } from '../providers/useAuth';
 import { getSurvey, createSurvey, updateSurvey } from '../api/surveys';
 import { getSurveyErrorMessage } from '../api/errorMessages';
 import { logoutUser } from '../api/auth';
+import { generateId } from '../components/utils/generateId';
 import {
   DndContext,
   closestCenter,
@@ -28,7 +29,7 @@ import { IconArrowLeft, IconReload } from '../components/icons';
 function MakerPage() {
     {/* --- Функции-помощники --- */}
     const createNewQuestion = (nextPriority) => ({
-        id: `q_${crypto.randomUUID()}`,
+        id: `q_${generateId()}`,
         questionID: null,
         content: 'Новый вопрос',
         type: 'single',
@@ -36,7 +37,7 @@ function MakerPage() {
         orderPriority: nextPriority,
         options: [
             {
-                id: `opt_${crypto.randomUUID()}`,
+                id: `opt_${generateId()}`,
                 optionID: null,
                 text: 'Новый вариант',
                 order: 1
@@ -45,7 +46,7 @@ function MakerPage() {
     });
 
     const createNewOption = (nextOrder) => ({
-        id: `opt_${crypto.randomUUID()}`,
+        id: `opt_${generateId()}`,
         optionID: null,
         text: 'Новый вариант',
         order: nextOrder
@@ -147,14 +148,14 @@ function MakerPage() {
     const convertApiQuestionsToState = (apiQuestions) => {
         const questionsArray = Array.isArray(apiQuestions) ? apiQuestions : Object.values(apiQuestions);
         return questionsArray.map((q, idx) => ({
-            id: q.questionID ? `q_${q.questionID}` : `q_${crypto.randomUUID()}`,
+            id: q.questionID ? `q_${q.questionID}` : `q_${generateId()}`,
             questionID: q.questionID || null,
             content: q.content,
             type: q.type === 'single' ? 'single' : (q.type === 'multiple' ? 'multiple' : 'text'),
             isRequired: q.isRequired,
             orderPriority: idx + 1,
             options: (q.options || []).map((opt, optIdx) => ({
-                id: opt.optionID ? `opt_${opt.optionID}` : `opt_${crypto.randomUUID()}`,
+                id: opt.optionID ? `opt_${opt.optionID}` : `opt_${generateId()}`,
                 optionID: opt.optionID || null,
                 text: opt.text,
                 order: optIdx + 1,
