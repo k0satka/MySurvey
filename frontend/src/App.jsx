@@ -19,7 +19,7 @@ function App() {
                     {/* --- Защищённые маршруты --- */}
                     <Route path='/' element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
                     <Route path='/dashboard' element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-                    <Route path='/maker' element={<ProtectedRoute><MakerPage /></ProtectedRoute>} />
+                    <Route path='/maker/:id?' element={<ProtectedRoute><MakerPage /></ProtectedRoute>} />
                 </Routes>
             </AuthProvider>
         </BrowserRouter>
