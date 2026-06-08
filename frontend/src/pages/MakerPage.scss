@@ -88,8 +88,9 @@
     }
 
     .title-description {
-        resize: vertical;
-        overflow-y: auto;
+        overflow: hidden;
+        resize: none;
+        transition: height 0.1s ease;
     }
 
     .settings-group {
@@ -99,6 +100,9 @@
         padding: $spacing-lg $spacing-xl;
         gap: $spacing-xl;
         width: 50%;
+        @include mobile {
+            width: 90%;
+        }
     }
 
     .questions-group{

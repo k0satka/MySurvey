@@ -1,10 +1,11 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../providers/useAuth';
 import { getSurvey, createSurvey, updateSurvey } from '../api/surveys';
-import { getSurveyErrorMessage } from '../api/errorMessages';
+import { getErrorMessage } from '../api/errorHandler';
 import { logoutUser } from '../api/auth';
 import { generateId } from '../components/utils/generateId';
+import { validateSurveyForm } from '../components/utils/validators';
 import {
   DndContext,
   closestCenter,
@@ -23,8 +24,40 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import './MakerPage.scss';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
-import QuestionCard from '../components/layout/MakerQuestionCard';
+import MakerQuestionCard from '../components/layout/MakerQuestionCard';
 import { IconArrowLeft, IconReload } from '../components/icons';
+
+function AutoResizeTextarea({ value, onChange, placeholder, rows = 1, ...props }) {
+    const textareaRef = useRef(null);
+
+    const resize = () => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = `${textarea.scrollHeight}px`;
+        }
+    };
+
+    useEffect(() => {
+        resize();
+    }, [value]);
+
+    const handleChange = (e) => {
+        onChange(e);
+        resize();
+    };
+
+    return (
+        <textarea
+        ref={textareaRef}
+        value={value}
+        onChange={handleChange}
+        placeholder={placeholder}
+        rows={rows}
+        {...props}
+        />
+    );
+}
 
 function MakerPage() {
     {/* --- Функции-помощники --- */}
@@ -53,21 +86,19 @@ function MakerPage() {
     });
 
     const prepareForAPI = (data) => {
-        const questionsObj = {};
-        data.questions.forEach((q, idx) => {
+        const questionsArray = data.questions.map((q, idx) => {
             const optionsArr = (q.options || []).map((opt, optIdx) => ({
-                optionID: opt.optionID || undefined, // если есть
+                optionID: opt.optionID || undefined,
                 text: opt.text,
                 order: opt.order ?? optIdx + 1,
             }));
-            
-            questionsObj[idx] = {
+            return {
                 questionID: q.questionID || undefined,
                 content: q.content,
                 type: q.type,
                 isRequired: q.isRequired,
                 orderPriority: idx + 1,
-                options: optionsArr
+                options: optionsArr,
             };
         });
         
@@ -77,7 +108,7 @@ function MakerPage() {
             status: data.status,
             openedAt: data.openedAt,
             closedAt: data.closedAt,
-            questions: questionsObj
+            questions: questionsArray
         };
     };
 
@@ -86,20 +117,13 @@ function MakerPage() {
     const { token, signOut } = useAuth();
     const { id } = useParams();
     // Данные опроса
-    {/*
-        const [surveyData, setSurveyData] = useState({
-            surveyId: id || null,
-            title: 'Новый опрос',
-            description: '',
-            closedAt: '',
-            questions: [createNewQuestion(1)],
-        });
-    */}
-    const [surveyId, setSurveyId] = useState(id || null);
-    const [title, setTitle] = useState('Новый опрос');
-    const [description, setDescription] = useState('');
-    const [closedAt, setClosedAt] = useState('');
-    const [questions, setQuestions] = useState([createNewQuestion(1)]);
+    const [surveyData, setSurveyData] = useState({
+        surveyId: id || null,
+        title: 'Новый опрос',
+        description: '',
+        closedAt: '',
+        questions: [createNewQuestion(1)],
+    });
     // Служебные флаги
     const [isEditable, setIsEditable] = useState(true);
     const [fetchLoading, setFetchLoading] = useState(false);
@@ -169,7 +193,7 @@ function MakerPage() {
             return;
         }
 
-        if (!surveyId) {
+        if (!surveyData.surveyId) {
             return;
         }
 
@@ -177,21 +201,24 @@ function MakerPage() {
         setFetchError('');
 
         try {
-            const data = await getSurvey(token, surveyId);
-            setTitle(data.title || '');
-            setDescription(data.description || '');
-            setClosedAt(data.closedAt ? data.closedAt.split('T')[0] : '');
-            setQuestions(convertApiQuestionsToState(data.questions));
-            setSurveyId(data.surveyID);
+            const data = await getSurvey(token, surveyData.surveyId);
+            setSurveyData(prev => ({
+                ...prev,
+                surveyId: data.surveyID,
+                title: data.title || '',
+                description: data.description || '',
+                closedAt: data.closedAt ? data.closedAt.split('T')[0] : '',
+                questions: convertApiQuestionsToState(data.questions)
+            }));
             setIsEditable(data.status !== 'published');
             markAsSaved();
         } catch (err) {
             console.error('Fetch survey error:', err);
-            setFetchError(getSurveyErrorMessage(err, 'Не удалось загрузить опрос.'));
+            setFetchError(getErrorMessage(err, 'Не удалось загрузить опрос.'));
         } finally {
             setFetchLoading(false);
         }
-    }, [surveyId, token, navigate]);
+    }, [surveyData.surveyId, token, navigate]);
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -200,54 +227,10 @@ function MakerPage() {
 
     {/* --- Валидация формы --- */}
     const validateForm = useCallback(() => {
-        const errors = {};
-        let isValid = true;
-
-        if (!title.trim()) {
-            errors.title = 'Название опроса обязательно';
-            isValid = false;
-        }
-
-        if (closedAt && new Date(closedAt) < new Date()) {
-            errors.closedAt = 'Некорректная дата закрытия опроса';
-            isValid = false;
-        }
-
-        if (questions.length === 0) {
-            errors.questions = 'Добавьте хотя бы один вопрос';
-            isValid = false;
-        }
-
-        for (const q of questions) {
-            const questionErrors = {};
-            if (!q.content.trim()) {
-                questionErrors.content = 'Текст вопроса обязателен';
-                isValid = false;
-            }
-            if (q.type === 'single' || q.type === 'multiple') {
-                if (!q.options || q.options.length < 2) {
-                    questionErrors.optionsCount = 'Для вопросов c одним или несколькими вариантами ответа нужно добавить хотя бы 2 варианта ответа';
-                    isValid = false;
-                } else {
-                    if (q.options.some(opt => !opt.text.trim())) {
-                        const optionErrors = {};
-                        q.options.forEach(opt => {
-                            if (!opt.text.trim()) {
-                                optionErrors[opt.id || opt.optionID] = 'Текст варианта обязателен';
-                                isValid = false;
-                            }
-                        });
-                        questionErrors.options = optionErrors;
-                    }
-                }
-            }
-            if (Object.keys(questionErrors).length > 0) {
-                errors[q.id || q.questionID] = questionErrors;
-            }
-        }
+        const { errors, isValid } = validateSurveyForm(surveyData);
         setValidationErrors(errors);
         return isValid;
-    }, [title, closedAt, questions]);
+    }, [surveyData]);
 
     {/* --- Обработчики действий пользователя --- */}
     const handleLogout = useCallback(async () => {
@@ -273,9 +256,12 @@ function MakerPage() {
     }, [hasUnsavedChanges, navigate]);
 
     const handleAddQuestion = useCallback(() => {
-        const nextPriority = questions.length + 1;
+        const nextPriority = surveyData.questions.length + 1;
         const newQuestion = createNewQuestion(nextPriority);
-        setQuestions([...questions, newQuestion]);
+        setSurveyData(prev => ({
+            ...prev,
+            questions: [...prev.questions, newQuestion]
+        }));
         markAsChanged();
         // Очистить ошибку количества вопросов
         setValidationErrors(prev => {
@@ -283,14 +269,17 @@ function MakerPage() {
             delete newErrors.questions;
             return newErrors;
         });
-    }, [questions, markAsChanged]);
+    }, [surveyData.questions, markAsChanged]);
 
     const handleUpdateQuestion = useCallback((questionId, updates) => {
-        setQuestions(questions.map(q =>
-            (q.id === questionId || q.questionID === questionId)
-                ? { ...q, ...updates }
+        setSurveyData(prev => ({
+            ...prev,
+            questions: prev.questions.map(q =>
+                (q.id === questionId || q.questionID === questionId)
+                    ? { ...q, ...updates }
                 : q
-        ));
+            )
+        }));
         markAsChanged();
         // Очистить ошибки вопроса при редактировании
         setValidationErrors(prev => {
@@ -300,12 +289,15 @@ function MakerPage() {
             }
             return newErrors;
         });
-    }, [questions, markAsChanged]);
+    }, [surveyData.questions, markAsChanged]);
 
     const handleDeleteQuestion = useCallback((questionId) => {
-        setQuestions(questions.filter(q =>
-            q.id !== questionId && q.questionID !== questionId
-        ));
+        setSurveyData(prev => ({
+            ...prev,
+            questions: prev.questions.filter(q =>
+                q.id !== questionId && q.questionID !== questionId
+            )
+        }));
         markAsChanged();
         // Очистить ошибки удалённого вопроса
         setValidationErrors(prev => {
@@ -315,7 +307,7 @@ function MakerPage() {
             }
             return newErrors;
         });
-    }, [questions, markAsChanged]);
+    }, [surveyData.questions, markAsChanged]);
 
     const handleSave = useCallback(async (publish = false) => {
         if (!validateForm()) {
@@ -333,24 +325,21 @@ function MakerPage() {
             }
 
             const payload = prepareForAPI({
-                title,
-                description,
+                ...surveyData,
                 status: publish ? 'published' : 'draft',
                 openedAt: publish ? null : new Date().toISOString(),
-                closedAt,
-                questions
             });
 
             let data;
-            if (surveyId) {
-                data = await updateSurvey(token, surveyId, payload);
+            if (surveyData.surveyId) {
+                data = await updateSurvey(token, surveyData.surveyId, payload);
             } else {
                 data = await createSurvey(token, payload);
             }
 
             // Если это новый опрос, сохраняем ID
-            if (!surveyId && data.surveyID) {
-                setSurveyId(data.surveyID);
+            if (!surveyData.surveyId && data.surveyID) {
+                setSurveyData(prev => ({ ...prev, surveyId: data.surveyID }));
                 navigate(`/maker/${data.surveyID}`, { replace: true });
             }
 
@@ -365,24 +354,24 @@ function MakerPage() {
             setTimeout(() => setSuccess(''), 3000);
         } catch (err) {
             console.error('Save error:', err);
-            setSaveError(getSurveyErrorMessage(err, 'Не удалось сохранить опрос'));
+            setSaveError(getErrorMessage(err, 'Не удалось сохранить опрос'));
         } finally {
             setSaveLoading(false);
         }
-    }, [title, description, questions, surveyId, navigate, token, validateForm, markAsSaved]);
+    }, [surveyData, navigate, token, validateForm, markAsSaved]);
 
     const handleDragEnd = (event) => {
         const { active, over } = event;
         if (active.id !== over.id) {
-            const oldIndex = questions.findIndex(q => (q.id === active.id || q.questionID === active.id));
-            const newIndex = questions.findIndex(q => (q.id === over.id || q.questionID === over.id));
-            const newQuestions = arrayMove(questions, oldIndex, newIndex);
+            const oldIndex = surveyData.questions.findIndex(q => (q.id === active.id || q.questionID === active.id));
+            const newIndex = surveyData.questions.findIndex(q => (q.id === over.id || q.questionID === over.id));
+            const newQuestions = arrayMove(surveyData.questions, oldIndex, newIndex);
             // Обновляем orderPriority на основе новой позиции
             const updatedQuestions = newQuestions.map((q, idx) => ({
             ...q,
             orderPriority: idx + 1
             }));
-            setQuestions(updatedQuestions);
+            setSurveyData(prev => ({ ...prev, questions: updatedQuestions }));
             markAsChanged();
         }
     };
@@ -426,9 +415,9 @@ function MakerPage() {
                             id="surveyTitle"
                             name="surveyTitle"
                             type="text"
-                            value={title}
+                            value={surveyData.title}
                             onChange={(e) => {
-                                setTitle(e.target.value);
+                                setSurveyData(prev => ({ ...prev, title: e.target.value }));
                                 markAsChanged();
                                 if (validationErrors.title) {
                                     setValidationErrors(prev => ({ ...prev, title: '' }));
@@ -447,18 +436,18 @@ function MakerPage() {
                         }
                     </div>
                     <div className='input-group'>
-                        <textarea
-                            className="text-h3 input-field title-description"
-                            rows='1'
+                        <AutoResizeTextarea
+                            className='text-h3 input-field title-description'
+                            value={surveyData.description}
+                            onChange={(e) => {
+                                setSurveyData(prev => ({ ...prev, description: e.target.value }));
+                                markAsChanged();
+                            }}
+                            placeholder='Описание'
+                            rows={1}
                             id="surveyDescription"
                             name="surveyDescription"
-                            value={description}
-                            onChange={(e) => {
-                            setDescription(e.target.value);
-                            markAsChanged();
-                        }}
                             disabled={!isEditable}
-                            placeholder="Описание"
                         />
                         <div className='input-line' />
                     </div>
@@ -473,9 +462,9 @@ function MakerPage() {
                             className='text-body input-field'
                             id='closedAt'
                             type='date' 
-                            value={closedAt}
+                            value={surveyData.closedAt}
                             onChange={(e) => {
-                                setClosedAt(e.target.value);
+                                setSurveyData(prev => ({ ...prev, closedAt: e.target.value }));
                                 markAsChanged();
                                 if (validationErrors.closedAt) {
                                     setValidationErrors(prev => ({ ...prev, closedAt: '' }));
@@ -499,11 +488,11 @@ function MakerPage() {
                         modifiers={[restrictToVerticalAxis]}
                     >
                         <SortableContext
-                            items={questions.map(q => q.id || q.questionID)}
+                            items={surveyData.questions.map(q => q.id || q.questionID)}
                             strategy={verticalListSortingStrategy}
                         >
-                            {questions.map(question => (
-                                <QuestionCard
+                            {surveyData.questions.map(question => (
+                                <MakerQuestionCard
                                     key={question.id}
                                     question={question}
                                     error={validationErrors[question.id || question.questionID]}

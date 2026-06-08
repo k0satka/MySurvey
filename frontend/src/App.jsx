@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import MakerPage from './pages/MakerPage';
+import TakerPage from './pages/TakerPage';
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                     {/* --- Публичные маршруты --- */}
                     <Route path='/login' element={<LoginPage />} />
                     <Route path='/register' element={<RegisterPage />} />
+                    <Route path='/take/:id' element={<TakerPage />} />
                     
                     {/* --- Защищённые маршруты --- */}
                     <Route path='/' element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />

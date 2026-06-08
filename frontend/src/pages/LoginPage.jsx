@@ -2,7 +2,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../providers/useAuth';
 import { loginUser } from '../api/auth';
-import { getAuthErrorMessage } from '../api/errorMessages';
+import { getErrorMessage } from '../api/errorHandler';
+import { validateLoginForm } from '../components/utils/validators';
 import './LoginPage.scss';
 import { IconMail, IconLock, IconEye, IconEyeOff } from '../components/icons';
 
@@ -16,26 +17,14 @@ function LoginPage() {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const success = location.state?.message || "";
 
-    {/* --- Обработчики действий пользователя --- */}
+    {/* --- Валидация формы --- */}
     const validateForm = useCallback(() => {
-        const newErrors = {};
-
-        if (!formData.email) {
-            newErrors.email = 'Email обязателен';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Неверный формат email';
-        }
-
-        if (!formData.password) {
-            newErrors.password = 'Пароль обязателен';
-        } else if (formData.password.length < 8) {
-            newErrors.password = 'Пароль должен содержать не менее 8 символов';
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        const { errors, isValid } = validateLoginForm(formData);
+        setErrors(errors);
+        return isValid;
     }, [formData]);
-
+    
+    {/* --- Обработчики действий пользователя --- */}
     const handleInputChange = useCallback(
         (event) => {
             const { name, value } = event.target;
@@ -70,7 +59,7 @@ function LoginPage() {
                 signIn({ token: data.token, user: data.user });
                 navigate('/dashboard');
             } catch (error) {
-                setErrors({ general: getAuthErrorMessage(error, 'Не удалось выполнить вход') });
+                setErrors({ general: getErrorMessage(error, 'Не удалось выполнить вход') });
             } finally {
                 setLoading(false);
             }

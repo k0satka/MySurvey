@@ -12,7 +12,7 @@ import {
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-function QuestionCard({ question, onUpdate, onDelete, createNewOption, error = {}, isEditable = true }) {
+function MakerQuestionCard({ question, onUpdate, onDelete, createNewOption, error = {}, isEditable = true }) {
     const {
         attributes,
         listeners,
@@ -32,7 +32,12 @@ function QuestionCard({ question, onUpdate, onDelete, createNewOption, error = {
     };
 
     const handleChangeType = (e) => {
-        onUpdate(question.id || question.questionID, { type: e.target.value });
+        const newType = e.target.value;
+        const updates = { type: newType };
+        if (newType === 'text') {
+            updates.options = []; // очищаем варианты если это текстовый вопрос
+        }
+        onUpdate(question.id || question.questionID, updates);
     };
 
     const handleChangeRequired = () => {
@@ -219,4 +224,4 @@ function QuestionCard({ question, onUpdate, onDelete, createNewOption, error = {
     );
 }
 
-export default QuestionCard;
+export default MakerQuestionCard;

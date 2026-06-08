@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../providers/useAuth';
 import { getSurveys, deleteSurvey } from '../api/surveys';
-import { getSurveyErrorMessage } from '../api/errorMessages';
+import { getErrorMessage } from '../api/errorHandler';
 import { logoutUser } from '../api/auth';
 import './DashboardPage.scss';
 import Header from '../components/layout/Header';
@@ -44,7 +44,7 @@ function DashboardPage() {
             setSurveys(formatted);
         } catch (err) {
             console.error('Fetch surveys error:', err);
-            setError(getSurveyErrorMessage(err, 'Не удалось загрузить опросы.'));
+            setError(getErrorMessage(err, 'Не удалось загрузить опросы.'));
         } finally {
             setLoading(false);
         }
@@ -103,7 +103,7 @@ function DashboardPage() {
             console.log('Опрос удалён');
         } catch (err) {
             console.error('Delete error:', err);
-            alert(getSurveyErrorMessage(err, 'Не удалось удалить опрос'));
+            alert(getErrorMessage(err, 'Не удалось удалить опрос'));
         }
     }, [token]);
 

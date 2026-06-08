@@ -1,7 +1,8 @@
 ﻿import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../api/auth';
-import { getAuthErrorMessage } from '../api/errorMessages';
+import { getErrorMessage } from '../api/errorHandler';
+import { validateRegisterForm } from '../components/utils/validators';
 import './RegisterPage.scss';
 import { IconUser, IconMail, IconLock, IconEye, IconEyeOff } from '../components/icons';
 
@@ -14,35 +15,14 @@ function RegisterPage() {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
-    {/* --- Обработчики действий пользователя --- */}
+    {/* --- Валидация формы --- */}
     const validateForm = useCallback(() => {
-        const newErrors = {};
-        if (!formData.name) {
-            newErrors.name = 'Имя обязательно';
-        }
-
-        if (!formData.email) {
-            newErrors.email = 'Email обязателен';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Неверный формат email';
-        }
-    
-        if (!formData.password) {
-            newErrors.password = 'Пароль обязателен';
-        } else if (formData.password.length < 8) {
-            newErrors.password = 'Пароль должен содержать не менее 8 символов';
-        }
-
-        if (!formData.confirmPassword) {
-            newErrors.confirmPassword = 'Подтверждение пароля обязательно';
-        } else if (formData.password !== formData.confirmPassword) {
-            newErrors.confirmPassword = 'Пароли не совпадают';
-        }
-    
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        const { errors, isValid } = validateRegisterForm(formData);
+        setErrors(errors);
+        return isValid;
     }, [formData]);
-
+    
+    {/* --- Обработчики действий пользователя --- */}
     const handleInputChange = useCallback((event) => {
         const { name, value } = event.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
@@ -74,7 +54,7 @@ function RegisterPage() {
 
             navigate('/login', { state: { message: 'Регистрация прошла успешно! Войдите в аккаунт.' } });
         } catch (error) {
-            setErrors({ general: getAuthErrorMessage(error, 'Не удалось зарегистрироваться') });
+            setErrors({ general: getErrorMessage(error, 'Не удалось зарегистрироваться') });
         } finally {
             setLoading(false);
         }

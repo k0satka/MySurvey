@@ -87,8 +87,8 @@
 }
 
 .spinner {
-    width: clamp(1.5rem, 3vw, 2rem); // 24px → 32px
-    height: clamp(1.5rem, 3vw, 2rem);
+    width: $icon-size-primary;
+    height: $icon-size-primary;
     border: 3px solid $color-secondary;
     border-top-color: $color-primary;
     border-radius: 50%;
@@ -101,13 +101,13 @@
 
 // --- Иконки ---
 .icon-primary {
-    width: clamp(1.5rem, 3vw, 2rem); // 24px → 32px
-    height: clamp(1.5rem, 3vw, 2rem);
+    width: $icon-size-primary;
+    height: $icon-size-primary;
 }
 
 .icon-secondary {
-    width: clamp(1.125rem, 2.25vw, 1.5rem); // 18px → 24px
-    height: clamp(1.125rem, 2.25vw, 1.5rem);
+    width: $icon-size-secondary;
+    height: $icon-size-secondary;
 }
 
 // --- Линия-разделитель ---
@@ -128,7 +128,7 @@
     box-shadow: 0 4px 12px $color-shadow;
 
     color: $color-error;
-    font-size: $font-size-helper;
+    font-size: $font-size-small;
     font-weight: $font-weight-regular;
 
     padding: $spacing-2xs $spacing-xs;
